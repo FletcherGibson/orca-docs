@@ -1,0 +1,47 @@
+---
+title: CLI reference
+---
+
+Orca ships as the `agent-orca` binary.
+
+## Core (verification)
+
+- `agent-orca init --preset go|node|python` — generate a starter `orca.yaml`
+- `agent-orca check [--json]` — run validation checks from `orca.yaml`
+
+## Orchestration (local control plane)
+
+- `agent-orca loop <target> [flags]` — run the experimental loop
+  - common: `agent-orca loop . --manual-coder-a --fresh`
+
+### Run history
+
+- `agent-orca runs` — list known runs (supports indexes like `#1`)
+- `agent-orca show --run <current|latest|#n|run_id>` — show run summary
+- `agent-orca report --run <selector>` — show run report + score + check summary
+
+### Logs
+
+- `agent-orca logs <role> [--run <selector>] [-f] [--n 200]`
+  - roles: `loop`, `planner`, `coder-a`, `coder-b`, `critic`
+
+### Control
+
+- `agent-orca cancel` — cooperative cancel (writes a cancel flag)
+- `agent-orca resume` — resume a cancelled/interrupted run (best-effort)
+- `agent-orca retry critic` — rerun critic (best-effort)
+
+### Accept / land
+
+- `agent-orca approve [--run <selector>] [--by <name>]` — record approval artifact
+- `agent-orca promote [--run <selector>] [--branch <name>]` — create/switch a local branch at the accepted result
+- `agent-orca checkout-winner [--run <selector>] [--branch <name>] [--force]` — legacy convenience command
+
+### Cleanup
+
+- `agent-orca clean [--all]` — remove worktrees; `--all` also removes `.agent-orca/`
+
+## Utilities
+
+- `agent-orca doctor` — environment sanity checks (git repo, worktree, go)
+- `agent-orca version` / `agent-orca --version` — build/version info

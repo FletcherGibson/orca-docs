@@ -1,0 +1,39 @@
+---
+title: Getting started
+---
+
+## Install
+
+From your local checkout of `anthurium-ai/orca`:
+
+```bash
+./install.sh
+agent-orca --version
+```
+
+## Initialize a repo
+
+In the repo you want to work on:
+
+```bash
+agent-orca init --preset go   # or node|python
+agent-orca check
+```
+
+## Orchestrate (manual coder)
+
+```bash
+agent-orca loop . --manual-coder-a --fresh
+
+# watch
+agent-orca show --run latest
+agent-orca logs loop  --run latest -f
+agent-orca logs critic --run latest -f
+
+# accept and land locally
+agent-orca approve --run latest
+agent-orca promote --run latest
+
+# cleanup
+agent-orca clean --all
+```

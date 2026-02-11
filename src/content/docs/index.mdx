@@ -4,30 +4,25 @@ title: Orca
 
 Orca is a **verifier-first agent orchestrator**.
 
-- **Deterministic verification** is the product: `agent-orca check`
-- **Orchestration** is the control plane: runs, roles/workers, logs, evidence, and safe promotion
+- **Verification is the product**: `agent-orca check` runs your repo’s definition of done from `orca.yaml`.
+- **Orchestration is the control plane**: runs, roles/workers, logs, evidence, and safe promotion.
 
-## Quickstart
+## The 60-second tour
 
 ```bash
-# in the orca repo
+# install (from your orca checkout)
 ./install.sh
-agent-orca --version
-```
 
-In a target repo:
-
-```bash
-agent-orca init --preset go   # or node|python
+# in any repo
+agent-orca init --preset go
 agent-orca check
-```
 
-## Orchestration (manual dogfood)
-
-```bash
+# orchestrate (manual)
 agent-orca loop . --manual-coder-a --fresh
 agent-orca show --run latest
 agent-orca logs critic --run latest -f
 agent-orca approve --run latest
 agent-orca promote --run latest
 ```
+
+Next: [Getting started](/getting-started/) and the [CLI reference](/reference/cli/).
