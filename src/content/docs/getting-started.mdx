@@ -43,11 +43,38 @@ agent-orca clean --all
 ```bash
 agent-orca queue enqueue "Add /healthz endpoint"
 agent-orca queue enqueue "Refactor config loading"
-agent-orca queue ls
+agent-orca queue ls --active
 
-# in two terminals:
+# in separate terminals:
 agent-orca work --worker coder-1
 agent-orca work --worker coder-2
 ```
 
-Each worker creates its own worktree, waits for you to commit, then runs `agent-orca check` to accept/reject.
+Each worker creates its own worktree, waits for you to commit, then runs validation to accept/reject.
+
+Useful recovery and hygiene commands:
+
+```bash
+# inspect failures
+agent-orca queue ls --failed
+
+# retry one failed item
+agent-orca queue retry <item_id>
+
+# retry latest failed item
+agent-orca queue retry --latest-failed
+
+# retry all failed items (optionally cap count)
+agent-orca queue retry --all-failed --limit 3
+
+# remove stale worker worktrees
+agent-orca queue gc
+```
+
+Evidence is written per task at:
+
+```text
+.agent-orca/runs/queue/<item_id>/evidence.json
+```
+
+And `agent-orca show --run latest` includes queue totals, active workers, and stale lease count.
