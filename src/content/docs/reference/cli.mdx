@@ -53,3 +53,14 @@ Orca ships as the `agent-orca` binary.
 
 - `agent-orca doctor` — environment sanity checks (git repo, worktree, go)
 - `agent-orca version` / `agent-orca --version` — build/version info
+
+## TUI
+
+- `agent-orca ui` — open the run UI (TUI)
+
+## Run selectors
+
+Where supported, `--run` accepts:
+- `current`, `latest`
+- `#<n>` (from `agent-orca runs`)
+- a full run id, or a **unique prefix** of a run id
