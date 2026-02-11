@@ -1,0 +1,19 @@
+---
+title: Troubleshooting
+---
+
+## Stale binary
+Reinstall from your checkout:
+
+```bash
+cd /path/to/orca
+./install.sh
+hash -r
+agent-orca --version
+```
+
+## Worktrees stuck
+
+```bash
+agent-orca clean --all
+```
