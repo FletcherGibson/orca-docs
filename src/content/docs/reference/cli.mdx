@@ -15,7 +15,7 @@ Orca ships as the `agent-orca` binary.
 
 - `agent-orca queue enqueue <desc>` — enqueue a task
 - `agent-orca queue ls [--active|--failed]` — list tasks (filter active/failed)
-- `agent-orca queue retry <item_id>` — requeue a failed item as a new queued task (`retry_of` lineage)
+- `agent-orca queue retry [item_id] [--latest-failed]` — requeue a failed item as a new queued task (`retry_of` lineage)
 - `agent-orca queue gc` — prune stale `worker-*` worktrees not currently leased
 - `agent-orca queue clear` — clear the queue
 - `agent-orca work --worker <id> [--manual] [--timeout-seconds 1800] [--cleanup-worktree]` — lease next queued task and run it (manual by default; waits for a commit, then verifies)
