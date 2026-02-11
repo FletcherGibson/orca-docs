@@ -37,3 +37,17 @@ agent-orca promote --run latest
 # cleanup
 agent-orca clean --all
 ```
+
+## Task queue (multiple workers on different tasks)
+
+```bash
+agent-orca queue enqueue "Add /healthz endpoint"
+agent-orca queue enqueue "Refactor config loading"
+agent-orca queue ls
+
+# in two terminals:
+agent-orca work --worker coder-1
+agent-orca work --worker coder-2
+```
+
+Each worker creates its own worktree, waits for you to commit, then runs `agent-orca check` to accept/reject.

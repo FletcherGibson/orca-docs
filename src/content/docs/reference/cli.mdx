@@ -11,6 +11,14 @@ Orca ships as the `agent-orca` binary.
 
 ## Orchestration (local control plane)
 
+### Task queue + workers (v1)
+
+- `agent-orca queue enqueue <desc>` — enqueue a task
+- `agent-orca queue ls` — list tasks
+- `agent-orca queue clear` — clear the queue
+- `agent-orca work --worker <id>` — lease next queued task and run it (manual by default; waits for a commit, then verifies)
+
+
 - `agent-orca loop <target> [flags]` — run the experimental loop
   - common: `agent-orca loop . --manual-coder-a --fresh`
 
