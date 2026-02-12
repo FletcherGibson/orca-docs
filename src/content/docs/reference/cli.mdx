@@ -32,7 +32,7 @@ Orca ships as the `agent-orca` binary.
 ### Run history
 
 - `agent-orca runs` — list known runs (supports indexes like `#1`)
-- `agent-orca show --run <current|latest|#n|run_id>` — show run summary (includes queue totals, active workers, stale lease count; falls back to live queue/work view if no archived run exists yet)
+- `agent-orca show --run <current|latest|#n|run_id>` — show run summary (includes queue totals, active workers, stale lease count; falls back to live queue/work view if no archived run exists yet; includes next-action hints and latest failed-item summary)
 - `agent-orca report --run <selector>` — show run report + score + check summary
 
 ### Logs
