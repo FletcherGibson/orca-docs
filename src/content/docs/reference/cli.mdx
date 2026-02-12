@@ -15,7 +15,7 @@ Orca ships as the `agent-orca` binary.
 
 - `agent-orca do <task> [--mode manual|auto|external] [--role coder]` — fast path for a single task through queue/work validation flow
 - `agent-orca queue enqueue <desc>` — enqueue a task
-- `agent-orca queue import <file>` — import tasks from a text file (plain lines, bullets, and markdown `- [ ]` checkboxes; ignores `#` comments and completed `- [x]` items)
+- `agent-orca queue import <file> [--dry-run]` — import tasks from a text file (plain lines, bullets, and markdown `- [ ]` checkboxes; ignores `#` comments and completed `- [x]` items). `--dry-run` previews parsed tasks without enqueueing.
 - `agent-orca queue ls [--active|--failed]` — list tasks (filter active/failed)
 - `agent-orca queue retry [item_id] [--latest-failed|--all-failed] [--limit N]` — requeue failed item(s) as new queued task(s) (`retry_of` lineage)
 - `agent-orca queue gc` — prune stale `worker-*` worktrees not currently leased
