@@ -37,7 +37,8 @@ Orca ships as the `agent-orca` binary.
 - `agent-orca runs` — list known runs (supports indexes like `#1`)
 - `agent-orca show --run <current|latest|#n|run_id>` — show run summary (includes queue totals, active workers, stale lease count; falls back to live queue/work view if no archived run exists yet; includes next-action hints and latest failed-item summary)
 - `agent-orca report --run <selector>` — show run report + score + check summary
-- `agent-orca metrics [--json]` — trust-facing queue metrics (pass rate, evidence coverage, top failure causes)
+- `agent-orca metrics [--json]` — trust-facing queue metrics (pass rate, evidence coverage, top failure causes) and append snapshot history
+- `agent-orca metrics-history [--json] [--limit N]` — view recent metrics snapshots from `.agent-orca/state/metrics-history.json`
 
 ### Logs
 
