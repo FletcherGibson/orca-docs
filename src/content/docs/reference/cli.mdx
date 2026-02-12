@@ -20,7 +20,7 @@ Orca ships as the `agent-orca` binary.
 - `agent-orca queue retry [item_id] [--latest-failed|--all-failed] [--limit N]` — requeue failed item(s) as new queued task(s) (`retry_of` lineage)
 - `agent-orca queue gc` — prune stale `worker-*` worktrees not currently leased
 - `agent-orca queue clear` — clear the queue
-- `agent-orca work --worker <id> [--mode manual|auto|external] [--role coder] [--timeout-seconds 1800] [--cleanup-worktree]` — lease next queued task and execute it
+- `agent-orca work --worker <id> [--mode manual|auto|external] [--role coder] [--timeout-seconds 1800] [--cleanup-worktree]` — lease next queued task and execute it (`--timeout-seconds` applies to both manual and auto/external modes)
   - `manual` mode waits for your commit, then verifies
   - `auto` / `external` execute the configured role from `orca.yaml` (default role name: `coder`); if the worker exits without a commit but leaves tracked changes, Orca attempts a fallback auto-commit
   - writes per-task evidence to `.agent-orca/runs/queue/<item_id>/evidence.json`
