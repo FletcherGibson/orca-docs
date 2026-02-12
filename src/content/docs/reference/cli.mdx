@@ -7,7 +7,7 @@ Orca ships as the `agent-orca` binary.
 ## Core (verification)
 
 - `agent-orca init --preset go|node|python` — generate a starter `orca.yaml`
-- `agent-orca check [--json]` — run validation checks from `orca.yaml`
+- `agent-orca check [--json] [--require-fresh-binary]` — run validation checks from `orca.yaml` (optionally fail if installed binary is behind repo HEAD)
 
 ## Orchestration (local control plane)
 
