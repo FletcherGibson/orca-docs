@@ -25,6 +25,7 @@ Orca ships as the `agent-orca` binary.
   - `manual` mode waits for your commit, then verifies
   - `auto` / `external` execute the configured role from `orca.yaml` (default role name: `coder`); if the worker exits without a commit but leaves tracked changes, Orca attempts a fallback auto-commit
   - auto mode prints periodic runner heartbeat lines for long-running tasks
+  - per-item worker logs are written to `.agent-orca/logs/work-<worker>-<item_id>.log`
   - writes per-task evidence to `.agent-orca/runs/queue/<item_id>/evidence.json` (including worker output excerpts on failures)
 
 
