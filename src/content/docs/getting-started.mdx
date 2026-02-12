@@ -55,7 +55,7 @@ Each worker creates its own worktree, waits for you to commit, then runs validat
 Fast path for one-off work:
 
 ```bash
-agent-orca do "Add DELETE /todos/{id} endpoint"
+agent-orca do "Add DELETE /todos/{id} endpoint" --mode auto --role coder
 ```
 
 Useful recovery and hygiene commands:
