@@ -52,6 +52,12 @@ agent-orca work --worker coder-2
 
 Each worker creates its own worktree, waits for you to commit, then runs validation to accept/reject.
 
+Fast path for one-off work:
+
+```bash
+agent-orca do "Add DELETE /todos/{id} endpoint"
+```
+
 Useful recovery and hygiene commands:
 
 ```bash

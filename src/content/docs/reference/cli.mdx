@@ -13,12 +13,16 @@ Orca ships as the `agent-orca` binary.
 
 ### Task queue + workers (v1)
 
+- `agent-orca do <task> [--mode manual|auto|external]` — fast path for a single task through queue/work validation flow
 - `agent-orca queue enqueue <desc>` — enqueue a task
+- `agent-orca queue import <file>` — import tasks from a text file (one task per line, `#` comments ignored)
 - `agent-orca queue ls [--active|--failed]` — list tasks (filter active/failed)
 - `agent-orca queue retry [item_id] [--latest-failed|--all-failed] [--limit N]` — requeue failed item(s) as new queued task(s) (`retry_of` lineage)
 - `agent-orca queue gc` — prune stale `worker-*` worktrees not currently leased
 - `agent-orca queue clear` — clear the queue
-- `agent-orca work --worker <id> [--manual] [--timeout-seconds 1800] [--cleanup-worktree]` — lease next queued task and run it (manual by default; waits for a commit, then verifies)
+- `agent-orca work --worker <id> [--mode manual|auto|external] [--timeout-seconds 1800] [--cleanup-worktree]` — lease next queued task and execute it
+  - `manual` mode waits for your commit, then verifies
+  - `auto` / `external` are reserved for upcoming runner integrations
   - writes per-task evidence to `.agent-orca/runs/queue/<item_id>/evidence.json`
 
 
@@ -28,7 +32,7 @@ Orca ships as the `agent-orca` binary.
 ### Run history
 
 - `agent-orca runs` — list known runs (supports indexes like `#1`)
-- `agent-orca show --run <current|latest|#n|run_id>` — show run summary (includes queue totals, active workers, stale lease count)
+- `agent-orca show --run <current|latest|#n|run_id>` — show run summary (includes queue totals, active workers, stale lease count; falls back to live queue/work view if no archived run exists yet)
 - `agent-orca report --run <selector>` — show run report + score + check summary
 
 ### Logs
