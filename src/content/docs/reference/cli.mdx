@@ -24,6 +24,7 @@ Orca ships as the `agent-orca` binary.
 - `agent-orca work --worker <id> [--mode manual|auto|external] [--role coder] [--timeout-seconds 1800] [--cleanup-worktree]` — lease next queued task and execute it (`--timeout-seconds` applies to both manual and auto/external modes)
   - `manual` mode waits for your commit, then verifies
   - `auto` / `external` execute the configured role from `orca.yaml` (default role name: `coder`); if the worker exits without a commit but leaves tracked changes, Orca attempts a fallback auto-commit
+  - auto mode prints periodic runner heartbeat lines for long-running tasks
   - writes per-task evidence to `.agent-orca/runs/queue/<item_id>/evidence.json` (including worker output excerpts on failures)
 
 
