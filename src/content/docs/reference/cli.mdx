@@ -4,14 +4,17 @@ title: CLI reference
 
 Orca ships as the `agent-orca` binary.
 
-## Core (verification)
+## Core
 
 - `agent-orca init --preset go|node|python` — generate a starter `orca.yaml`
 - `agent-orca check [--json] [--require-fresh-binary]` — run validation checks from `orca.yaml` (optionally fail if installed binary is behind repo HEAD)
+- `agent-orca blueprint lint <file>` — validate a blueprint file
+- `agent-orca blueprint run <file> [--json] [--restart] [--profile default|safe|fast|strict] [--input key=value]...` — run a blueprint workflow
+- `agent-orca blueprint evidence [--json] [--newest] [--limit N] [--days N]` — summarize local blueprint evidence
 
-## Orchestration (local control plane)
+## Validated work pipeline
 
-### Task queue + workers (v1)
+### Task queue and workers
 
 - `agent-orca do <task> [--mode manual|auto|external] [--role coder]` — fast path for a single task through queue/work validation flow
 - `agent-orca queue enqueue <desc>` — enqueue a task
@@ -27,10 +30,13 @@ Orca ships as the `agent-orca` binary.
   - auto mode prints periodic runner heartbeat lines for long-running tasks
   - per-item worker logs are written to `.agent-orca/logs/work-<worker>-<item_id>.log`
   - writes per-task evidence to `.agent-orca/runs/queue/<item_id>/evidence.json` (including worker output excerpts on failures)
+  - validates completion through the default blueprint and writes runtime-backed evidence as `blueprint-state.evidence.json`
 
+### Legacy loop
 
-- `agent-orca loop <target> [flags]` — run the experimental loop
-  - common: `agent-orca loop . --manual-coder-a --fresh`
+- `agent-orca loop <target> [flags]` — legacy experimental loop
+  - hidden from normal help
+  - kept for compatibility, not the primary product path
 
 ### Run history
 

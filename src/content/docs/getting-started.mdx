@@ -23,25 +23,20 @@ agent-orca doctor
 
 Starter templates now include commented role examples for Codex/Claude so `--mode auto` works without guesswork.
 
-## Orchestrate (manual coder)
+## Validate and run a blueprint
 
 ```bash
-agent-orca loop . --manual-coder-a --fresh
-
-# watch
-agent-orca show --run latest
-agent-orca logs loop  --run latest -f
-agent-orca logs critic --run latest -f
-
-# accept and land locally
-agent-orca approve --run latest
-agent-orca promote --run latest
-
-# cleanup
-agent-orca clean --all
+agent-orca blueprint lint blueprints/work-default-v1.yaml
+agent-orca blueprint run blueprints/work-default-v1.yaml
+agent-orca blueprint run blueprints/work-default-v1.yaml --profile strict
+agent-orca blueprint evidence --newest
 ```
 
-## Task queue (multiple workers on different tasks)
+The default blueprint in the Orca repo is `blueprints/work-default-v1.yaml`.
+
+Blueprint runs persist state and emit evidence with explicit terminal decisions: `PASS`, `WARN`, or `BLOCK`.
+
+## Task queue and validated work
 
 ```bash
 agent-orca queue enqueue "Add /healthz endpoint"
@@ -49,11 +44,11 @@ agent-orca queue enqueue "Refactor config loading"
 agent-orca queue ls --active
 
 # in separate terminals:
-agent-orca work --worker coder-1
-agent-orca work --worker coder-2
+agent-orca work --worker coder-1 --mode auto --role coder
+agent-orca work --worker coder-2 --mode auto --role coder
 ```
 
-Each worker creates its own worktree, waits for you to commit, then runs validation to accept/reject.
+Each worker creates its own worktree, executes the requested task, then validates completion through the default blueprint.
 
 Fast path for one-off work:
 
@@ -86,9 +81,19 @@ Evidence is written per task at:
 .agent-orca/runs/queue/<item_id>/evidence.json
 ```
 
-And `agent-orca show --run latest` includes queue totals, active workers, and stale lease count.
+Blueprint evidence is written alongside queue evidence as:
+
+```text
+.agent-orca/runs/queue/<item_id>/blueprint-state.evidence.json
+```
+
+Use `agent-orca blueprint evidence` for blueprint-level decision and duration summaries.
 Use `agent-orca metrics` for pass rate, evidence coverage, and top failure causes.
 
-For repeatable evaluation, run the 30-minute dogfood loop and score rubric in the Orca repo:
+## Legacy loop
+
+The repo still contains an older loop/pod system for compatibility, but it is not the primary product path and is intentionally hidden from the main CLI surface.
+
+For repeatable evaluation and internal background, see:
 
 - `docs/work/orca-dogfood-playbook.md`

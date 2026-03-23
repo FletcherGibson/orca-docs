@@ -3,10 +3,29 @@ title: Concepts
 ---
 
 ## Run
-A durable record of an orchestration attempt.
+A durable record of a blueprint or work-pipeline execution.
+
+Runs persist state, terminal decisions, and evidence artifacts.
+
+## Blueprint
+A declarative workflow definition that Orca can validate and run.
+
+Blueprints define:
+- the workflow steps
+- retry behavior
+- terminal outcomes
+- evidence-producing execution paths
+
+## Decision
+Every blueprint run ends as one of:
+- `PASS`
+- `WARN`
+- `BLOCK`
 
 ## Role / worker
-Planner, coder, critic — executed as isolated worktrees with logs.
+The configured execution identity used for automated work.
+
+Workers operate in isolated worktrees and write logs and evidence artifacts.
 
 ## Evidence
-Structured output (checks + artifacts) that proves the result is acceptable.
+Structured output that explains what happened during a run and why it passed, warned, or blocked.
