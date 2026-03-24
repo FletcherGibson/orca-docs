@@ -3,7 +3,7 @@ title: Concepts
 ---
 
 ## Run
-A durable record of a blueprint or work-pipeline execution.
+A durable record of a blueprint execution.
 
 Runs persist state, terminal decisions, and evidence artifacts.
 
@@ -15,6 +15,7 @@ Blueprints define:
 - retry behavior
 - terminal outcomes
 - evidence-producing execution paths
+- how deterministic and non-deterministic work are combined
 
 ## Decision
 Every blueprint run ends as one of:
@@ -22,10 +23,23 @@ Every blueprint run ends as one of:
 - `WARN`
 - `BLOCK`
 
-## Role / worker
-The configured execution identity used for automated work.
+## Deterministic step
+A step whose execution contract is explicit and machine-checkable.
 
-Workers operate in isolated worktrees and write logs and evidence artifacts.
+Examples:
+- `cmd`
+- `ci`
+- `check`
+- `wait`
+
+## Non-deterministic step
+A step that involves judgment, authorship, or approval.
+
+Examples:
+- `agent`
+- `approve`
+
+These steps can still be auditable because Orca persists the rendered prompt, command output, and final decision in the run evidence.
 
 ## Evidence
 Structured output that explains what happened during a run and why it passed, warned, or blocked.

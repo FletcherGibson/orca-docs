@@ -2,21 +2,20 @@
 title: Orca
 ---
 
-Orca is the blueprint runtime and control plane for AI-assisted software delivery.
+Orca is a blueprint authoring and execution CLI for workflows that merge deterministic and non-deterministic steps.
 
 It lets a team define a workflow once and run it with:
 - deterministic checks
+- non-deterministic prompts and approvals
 - bounded retries
 - explicit `PASS`, `WARN`, or `BLOCK` outcomes
 - evidence for every run
 
 Start with the blueprint path:
-- `agent-orca check`
 - `agent-orca blueprint lint`
 - `agent-orca blueprint run`
 - `agent-orca blueprint evidence`
-- `agent-orca do`
-- `agent-orca work`
+- `agent-orca version`
 
 ## The 60-second tour
 
@@ -24,17 +23,11 @@ Start with the blueprint path:
 # install (from your orca checkout)
 ./install.sh
 
-# in any repo
-agent-orca init --preset go
-agent-orca check
-
 # validate and run a blueprint
-agent-orca blueprint lint blueprints/work-default-v1.yaml
-agent-orca blueprint run blueprints/work-default-v1.yaml --profile strict
+agent-orca blueprint lint blueprints/orca-pr-default-v1.yaml
+agent-orca blueprint run blueprints/orca-pr-default-v1.yaml \
+  --input change_request="tighten blueprint evidence output for failed runs"
 agent-orca blueprint evidence --newest
-
-# run one task through the validated work pipeline
-agent-orca do "fix failing tests in queue retry flow" --mode auto --role coder
 ```
 
 Next: [Getting started](/getting-started/) and the [CLI reference](/reference/cli/).

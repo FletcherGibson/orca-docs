@@ -6,79 +6,28 @@ Orca ships as the `agent-orca` binary.
 
 ## Core
 
-- `agent-orca init --preset go|node|python` — generate a starter `orca.yaml`
-- `agent-orca check [--json] [--require-fresh-binary]` — run validation checks from `orca.yaml` (optionally fail if installed binary is behind repo HEAD)
+- `agent-orca blueprint init <file>` — generate a starter blueprint file
 - `agent-orca blueprint lint <file>` — validate a blueprint file
-- `agent-orca blueprint run <file> [--json] [--restart] [--profile default|safe|fast|strict] [--input key=value]...` — run a blueprint workflow
-- `agent-orca blueprint evidence [--json] [--newest] [--limit N] [--days N]` — summarize local blueprint evidence
-
-## Validated work pipeline
-
-### Task queue and workers
-
-- `agent-orca do <task> [--mode manual|auto|external] [--role coder]` — fast path for a single task through queue/work validation flow
-- `agent-orca queue enqueue <desc>` — enqueue a task
-- `agent-orca queue import <file> [--dry-run]` — import tasks from a text file (plain lines, bullets, and markdown `- [ ]` checkboxes; ignores `#` comments and completed `- [x]` items). `--dry-run` previews parsed tasks without enqueueing.
-- `agent-orca queue claim <item_id> [--worker coder-1]` — claim a specific queued item for a worker
-- `agent-orca queue ls [--active|--failed]` — list tasks (filter active/failed)
-- `agent-orca queue retry [item_id] [--latest-failed|--all-failed] [--limit N]` — requeue failed item(s) as new queued task(s) (`retry_of` lineage)
-- `agent-orca queue gc` — prune stale `worker-*` worktrees not currently leased
-- `agent-orca queue clear` — clear the queue
-- `agent-orca work --worker <id> [--mode manual|auto|external] [--role coder] [--timeout-seconds 1800] [--cleanup-worktree]` — lease next queued task and execute it (`--timeout-seconds` applies to both manual and auto/external modes)
-  - `manual` mode waits for your commit, then verifies
-  - `auto` / `external` execute the configured role from `orca.yaml` (default role name: `coder`); if the worker exits without a commit but leaves tracked changes, Orca attempts a fallback auto-commit
-  - auto mode prints periodic runner heartbeat lines for long-running tasks
-  - per-item worker logs are written to `.agent-orca/logs/work-<worker>-<item_id>.log`
-  - writes per-task evidence to `.agent-orca/runs/queue/<item_id>/evidence.json` (including worker output excerpts on failures)
-  - validates completion through the default blueprint and writes runtime-backed evidence as `blueprint-state.evidence.json`
-
-### Legacy loop
-
-- `agent-orca loop <target> [flags]` — legacy experimental loop
-  - hidden from normal help
-  - kept for compatibility, not the primary product path
-
-### Run history
-
-- `agent-orca runs` — list known runs (supports indexes like `#1`)
-- `agent-orca show --run <current|latest|#n|run_id>` — show run summary (includes queue totals, active workers, stale lease count; falls back to live queue/work view if no archived run exists yet; includes next-action hints and latest failed-item summary)
-- `agent-orca report --run <selector>` — show run report + score + check summary
-- `agent-orca metrics [--json]` — trust-facing queue metrics (pass rate, evidence coverage, top failure causes) and append snapshot history
-- `agent-orca metrics-history [--json] [--limit N]` — view recent metrics snapshots from `.agent-orca/state/metrics-history.json`
-
-### Logs
-
-- `agent-orca logs <role> [--run <selector>] [-f] [--n 200]`
-  - roles: `loop`, `planner`, `coder-a`, `coder-b`, `critic`
-
-### Control
-
-- `agent-orca cancel` — cooperative cancel (writes a cancel flag)
-- `agent-orca resume` — resume a cancelled/interrupted run (best-effort)
-- `agent-orca retry critic` — rerun critic (best-effort)
-
-### Accept / land
-
-- `agent-orca approve [--run <selector>] [--by <name>]` — record approval artifact
-- `agent-orca promote [--run <selector>] [--branch <name>]` — create/switch a local branch at the accepted result
-- `agent-orca checkout-winner [--run <selector>] [--branch <name>] [--force]` — legacy convenience command
-
-### Cleanup
-
-- `agent-orca clean [--all]` — remove worktrees; `--all` also removes `.agent-orca/`
+- `agent-orca blueprint run <file> [--json] [--restart] [--profile default|safe|fast|strict] [--root dir] [--state path] [--input key=value]...` — run a blueprint workflow
+- `agent-orca blueprint evidence [--json] [--newest] [--limit N] [--days N] [--root dir]` — summarize local blueprint evidence
 
 ## Utilities
 
-- `agent-orca doctor` — environment sanity checks (git repo, worktree, go, role executables from `orca.yaml`, and hints for non-interactive role args)
 - `agent-orca version` / `agent-orca --version` — build/version info
 
-## TUI
+## Node contract
 
-- `agent-orca ui` — open the run UI (TUI)
+Blueprint node types:
+- `cmd` and `ci` execute shell commands
+- `check` runs the deterministic contract from `orca.yaml`
+- `wait` sleeps for a duration
+- `agent` and `approve` can either record prompts only or execute a command against a rendered prompt contract
 
-## Run selectors
+When an `agent` or `approve` node includes both `prompt` and `run`, Orca exposes:
+- `ORCA_BLUEPRINT_NODE_PROMPT`
+- `ORCA_BLUEPRINT_NODE_PROMPT_FILE`
+- `ORCA_BLUEPRINT_NODE_NAME`
+- `ORCA_BLUEPRINT_NODE_TYPE`
+- `ORCA_BLUEPRINT_RUN_ROOT`
 
-Where supported, `--run` accepts:
-- `current`, `latest`
-- `#<n>` (from `agent-orca runs`)
-- a full run id, or a **unique prefix** of a run id
+Hydration inputs are also available to command nodes as env vars such as `ORCA_BLUEPRINT_INPUT_PRD`.

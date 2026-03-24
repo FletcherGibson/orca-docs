@@ -11,89 +11,65 @@ From your local checkout of `anthurium-ai/orca`:
 agent-orca --version
 ```
 
-## Initialize a repo
+## Prepare an execution root
 
-In the repo you want to work on:
+In the directory where you want blueprint state and evidence to live:
 
 ```bash
-agent-orca init --preset go   # or node|python
-agent-orca check
-agent-orca doctor
+cp /path/to/orca/orca.yaml .
 ```
 
-Starter templates now include commented role examples for Codex/Claude so `--mode auto` works without guesswork.
+`orca.yaml` defines the deterministic validation contract for blueprint `check` nodes.
 
 ## Validate and run a blueprint
 
 ```bash
-agent-orca blueprint lint blueprints/work-default-v1.yaml
-agent-orca blueprint run blueprints/work-default-v1.yaml
+agent-orca blueprint lint blueprints/orca-pr-default-v1.yaml
+agent-orca blueprint run blueprints/orca-pr-default-v1.yaml \
+  --input change_request="tighten blueprint evidence output for failed runs"
 agent-orca blueprint run blueprints/work-default-v1.yaml --profile strict
 agent-orca blueprint evidence --newest
 ```
 
-The default blueprint in the Orca repo is `blueprints/work-default-v1.yaml`.
+The default day-to-day blueprint in the Orca repo is `blueprints/orca-pr-default-v1.yaml`.
 
 Blueprint runs persist state and emit evidence with explicit terminal decisions: `PASS`, `WARN`, or `BLOCK`.
 
-## Task queue and validated work
+## Shipped Orca blueprints
+
+- `blueprints/orca-pr-default-v1.yaml`
+  The main product/code workflow for Orca itself.
+- `blueprints/orca-docs-refresh-v1.yaml`
+  A docs and messaging workflow that accepts richer context such as `prd`, `acceptance_criteria`, and `constraints`.
+- `blueprints/orca-release-readiness-v1.yaml`
+  A release gate that validates the repo, lints the blueprint catalogue, builds the CLI, and pauses for approval.
+- `blueprints/dogfood-orca-v1.yaml`
+  A minimal self-hosting workflow kept as a direct example.
+- `blueprints/work-default-v1.yaml`
+  A small deterministic validation example.
+
+## Pass richer context to a blueprint
+
+Blueprints can declare hydration inputs and you pass them with repeated `--input key=value` flags.
+
+For example, the docs workflow can take a PRD and explicit acceptance criteria:
 
 ```bash
-agent-orca queue enqueue "Add /healthz endpoint"
-agent-orca queue enqueue "Refactor config loading"
-agent-orca queue ls --active
-
-# in separate terminals:
-agent-orca work --worker coder-1 --mode auto --role coder
-agent-orca work --worker coder-2 --mode auto --role coder
+agent-orca blueprint run blueprints/orca-docs-refresh-v1.yaml \
+  --input change_request="refresh the docs for the new blueprint catalogue" \
+  --input prd="Orca should present a small set of practical blueprints for product, docs, and release work." \
+  --input acceptance_criteria="README and dogfood docs show the new default blueprint and when to use each one." \
+  --input constraints="Do not describe removed queue or worker features."
 ```
 
-Each worker creates its own worktree, executes the requested task, then validates completion through the default blueprint.
+Those inputs are rendered into `agent` and `approve` prompts automatically and are also exposed to command nodes through environment variables like `ORCA_BLUEPRINT_INPUT_PRD`.
 
-Fast path for one-off work:
+## Evidence
 
-```bash
-agent-orca do "Add DELETE /todos/{id} endpoint" --mode auto --role coder
-```
-
-Useful recovery and hygiene commands:
-
-```bash
-# inspect failures
-agent-orca queue ls --failed
-
-# retry one failed item
-agent-orca queue retry <item_id>
-
-# retry latest failed item
-agent-orca queue retry --latest-failed
-
-# retry all failed items (optionally cap count)
-agent-orca queue retry --all-failed --limit 3
-
-# remove stale worker worktrees
-agent-orca queue gc
-```
-
-Evidence is written per task at:
+Blueprint evidence is written under:
 
 ```text
-.agent-orca/runs/queue/<item_id>/evidence.json
-```
-
-Blueprint evidence is written alongside queue evidence as:
-
-```text
-.agent-orca/runs/queue/<item_id>/blueprint-state.evidence.json
+.agent-orca/runs/blueprint/<blueprint-name>/<run-id>/blueprint-state.evidence.json
 ```
 
 Use `agent-orca blueprint evidence` for blueprint-level decision and duration summaries.
-Use `agent-orca metrics` for pass rate, evidence coverage, and top failure causes.
-
-## Legacy loop
-
-The repo still contains an older loop/pod system for compatibility, but it is not the primary product path and is intentionally hidden from the main CLI surface.
-
-For repeatable evaluation and internal background, see:
-
-- `docs/work/orca-dogfood-playbook.md`
